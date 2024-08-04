@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+// /components/PantryManager.tsx
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { collection, query, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from '@/lib/firebase';
 import PantryForm from './PantryForm';
@@ -25,9 +27,9 @@ const PantryManager: React.FC = () => {
     const [deleteItemId, setDeleteItemId] = useState<string | null>(null);
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const { user } = useAuth();
-    const [tabValue, setTabValue] = useState('1')
+    const [tabValue, setTabValue] = useState('1');
 
-    const fetchItems = async () => {
+    const fetchItems = useCallback(async () => {
         if(user){
             const q = query(collection(db, `users/${user.uid}/pantry`));
             const querySnapshot = await getDocs(q);
@@ -35,11 +37,11 @@ const PantryManager: React.FC = () => {
             setItems(itemsList);
             setFilteredItems(itemsList);
         }
-    };
+    }, [user]);
 
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [fetchItems]);
 
     const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
@@ -62,19 +64,6 @@ const PantryManager: React.FC = () => {
             fetchItems();
         }
     };
-
-    // const handleSave = async (params: GridRenderCellParams) => {
-    //     const itemRef = doc(db, 'pantry', params.row.id);
-    //     await updateDoc(itemRef, {
-    //         name: params.row.name,
-    //         quantity: params.row.quantity
-    //     });
-    //     fetchItems();
-    //     setRowModesModel((prevModel) => ({
-    //         ...prevModel,
-    //         [params.id]: { mode: GridRowModes.View, fieldToFocus: undefined },
-    //     }));
-    // };
 
     const handleRowEditStart: GridEventListener<'rowEditStart'> = (params, event) => {
         event.defaultMuiPrevented = true;
@@ -159,24 +148,7 @@ const PantryManager: React.FC = () => {
                         <Delete />
                     </IconButton>
                 </>
-            ),
-            // renderEditCell: (params) => (
-            //     <>
-            //         <IconButton
-            //             onClick={() => handleSave(params)}
-            //         >
-            //             <Save />
-            //         </IconButton>
-            //         <IconButton
-            //             onClick={() => {
-            //                 setConfirmDelete(true);
-            //                 setDeleteItemId(params.row.id);
-            //             }}
-            //         >
-            //             <Delete />
-            //         </IconButton>
-            //     </>
-            // )
+            )
         }
     ];
 
