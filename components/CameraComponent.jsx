@@ -1,3 +1,4 @@
+// ./components/CameraComponent.jsx
 import React, { useEffect, useRef, useState } from 'react';
 import { Camera } from 'react-camera-pro';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, TextField } from '@mui/material';
@@ -6,6 +7,7 @@ import { useAlert } from '@/context';
 import { collection, addDoc, query, where, getDocs, updateDoc } from "firebase/firestore";
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
+import Image from 'next/image';
 
 const CameraComponent = ({ refreshItems }) => {
     const camera = useRef(null);
@@ -23,7 +25,7 @@ const CameraComponent = ({ refreshItems }) => {
             setCameraSupported(false);
             alert.error("Camera is not supported on this device or browser");
         }
-    }, []);
+    }, [alert]);
 
     const takePhoto = () => {
         if (camera.current) {
@@ -148,7 +150,7 @@ const CameraComponent = ({ refreshItems }) => {
                 <DialogTitle>Photo Taken</DialogTitle>
                 <DialogContent className='flex flex-col justify-center items-center'>
                     <DialogContentText>
-                        Review the photo. Click "Add" to save the item or "Cancel" to discard.
+                        Review the photo. Click &quot;Add&quot; to save the item or &quot;Cancel&quot; to discard.
                     </DialogContentText>
                     <TextField
                         required
@@ -157,7 +159,7 @@ const CameraComponent = ({ refreshItems }) => {
                         className='mt-10'
                         onChange={(e) => { setApiKey(e.target.value) }}
                     />
-                    {image && <img src={image} alt="Taken photo" style={{ width: '100%', marginTop: '10px' }} />}
+                    {image && <Image src={image} alt="Taken photo" layout='responsive' width={500} height={500} />}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleCancel} disabled={loading} startIcon={<Cancel />}>
