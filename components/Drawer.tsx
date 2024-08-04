@@ -1,3 +1,4 @@
+// ./components/Drawer.tsx
 import { useState } from 'react';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
@@ -101,11 +102,11 @@ export default function SwipeableEdgeDrawer(props: Props) {
 
                     setMessages(parseApiResponse(response.data));
                 } else {
-                    setMessages([<p className='text-xl'>You have No Item in your pantry</p>]);
+                    setMessages([<p className='text-xl' key="no-items">You have No Item in your pantry</p>]);
                 }
             }
         } catch (error) {
-            setMessages([<p>Error: Something Went Wrong</p>]);
+            setMessages([<p key="error">Error: Something Went Wrong</p>]);
             console.error('Error fetching data:', error);
         } finally {
             setLoading(false);
@@ -198,7 +199,7 @@ export default function SwipeableEdgeDrawer(props: Props) {
                         right: 0,
                         left: 0,
                     }}
-                    className='justify-center items-center text-center'
+                    className='justify-center flex items-center text-center'
                 >
                     <Puller />
                     <Typography sx={{ p: 2, color: 'text.primary', fontWeight: "bold", fontFamily: "fantasy" }} variant='h6'>Find Some Good Recipes</Typography>
